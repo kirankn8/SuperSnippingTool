@@ -1,0 +1,46 @@
+{
+  "name": "super-snipping-tool",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
+    "react-scripts": "2.1.1"
+  },
+  "homepage": "./",
+  "main": "src/start.js",
+  "scripts": {
+    "start": "nf start -p 3000",
+    "react-start": "react-scripts start",
+    "electron": "electron .",
+    "electron-start": "node src/start-react",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "pack": "build --dir",
+    "dist": "npm run build && build",
+    "postinstall": "install-app-deps"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "electron": "^3.0.8",
+    "electron-builder": "^20.33.2"
+  },
+  "build": {
+    "appId": "com.electron.electron-with-create-react-app",
+    "win": {
+      "iconUrl": "https://cdn2.iconfinder.com/data/icons/designer-skills/128/react-256.png"
+    },
+    "directories": {
+      "buildResources": "public"
+    }
+  }
+}
