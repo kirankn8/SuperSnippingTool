@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.4.0",
+    "@material-ui/icons": "^3.0.1",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-scripts": "2.1.1"
   },
   "homepage": "./",
-  "main": "src/start.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "nf start -p 3000",
     "react-start": "react-scripts start",
