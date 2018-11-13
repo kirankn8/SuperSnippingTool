@@ -6,7 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import './app.css'
-import { takeScreenShot } from './screenshot-action';
+import { takeScreenShot } from './utils/screenshot';
 
 class VideoRecording extends React.Component {
 
@@ -14,12 +14,12 @@ class VideoRecording extends React.Component {
         return (
             <div>
                 <Card>
-                    <CardContent>
+                    <CardContent className="centered">
                         <Button variant="outlined">
                             <span className="record-style">
                                 <i class="material-icons">fiber_manual_record</i>
                             </span>
-                        </Button>
+                        </Button> or <b className="record-style">(Alt + R)</b>
                     </CardContent>
                 </Card>
             </div>
@@ -30,7 +30,7 @@ class VideoRecording extends React.Component {
 
 class CameraSnapshot extends React.Component {
 
-    handleClick() {
+    handleCameraClick() {
         takeScreenShot();
     }
 
@@ -40,7 +40,7 @@ class CameraSnapshot extends React.Component {
                 <Card>
                     <CardContent className="centered">
                         <Typography>
-                            <Button variant="outlined" onClick={() => this.handleClick()}>
+                            <Button variant="outlined" onClick={() => this.handleCameraClick()}>
                                 <span className="camera-style">
                                     <i class="material-icons">camera_alt</i>
                                 </span>
@@ -93,7 +93,7 @@ class ActionToolBar extends React.Component {
         };
     }
 
-    handleClick(currentAction) {
+    handleCameraClick(currentAction) {
         this.setState({
             currentAction: currentAction,
         });
@@ -108,7 +108,7 @@ class ActionToolBar extends React.Component {
                     toolId={action.toolId}
                     toolName={action.toolName}
                     iconName={action.iconName}
-                    onClick={() => this.handleClick(action.toolId)}
+                    onClick={() => this.handleCameraClick(action.toolId)}
                 />
             );
         });
