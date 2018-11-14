@@ -7,6 +7,12 @@ import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import './app.css';
 import { takeScreenShot } from '../utils/capture-screenshot';
+const electron = window.require('electron');
+const ipcRenderer = electron.ipcRenderer;
+
+ipcRenderer.on('capture-screenshot', function () {
+    takeScreenShot();
+});
 
 class VideoRecording extends React.Component {
 

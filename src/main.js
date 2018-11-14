@@ -4,11 +4,10 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-
 const path = require('path');
 const url = require('url');
-
 const globalShortcut = electron.globalShortcut;
+const ipc = electron.ipcMain;
 
 let mainWindow;
 
@@ -19,13 +18,12 @@ function createWindow() {
         height: 200,
         minWidth: 400,
         minHeight: 200,
-        // backgroundColor: '#212121',
         show: false,
         frame: true,
-        webPreferences: {
-            nodeIntegration: false,
-            preload: __dirname + '/utils/preload.js'
-        },
+        // webPreferences: {
+        //     nodeIntegration: false,
+        //     preload: __dirname + '/utils/preload.js'
+        // },
     });
 
     mainWindow.loadURL(
@@ -57,8 +55,7 @@ function createWindow() {
 
     // TODO: Fix the global shortcut feature
     globalShortcut.register('Alt+C', function () {
-        const { takeScreenShot } = require('./utils/capture-screenshot');
-        takeScreenShot();
+        mainWindow.webContents.send('capture-screenshot');
     });
 }
 
