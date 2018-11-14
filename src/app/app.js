@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import './app.css';
-import { takeScreenShot } from './utils/capture-screenshot';
+import { takeScreenShot } from '../utils/capture-screenshot';
 
 class VideoRecording extends React.Component {
 
