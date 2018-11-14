@@ -1,11 +1,11 @@
-const electron = window.require('electron');
+const electron = window.electron;
 const fs = electron.remote.require('fs');
 const path = electron.remote.require('path');
 const desktopCapturer = electron.desktopCapturer;
 const electronScreen = electron.screen;
 const shell = electron.shell;
 
-export function takeScreenShot() {
+exports.takeScreenShot = function () {
     const thumbSize = determineScreenshot();
     let options = { types: ['screen'], thumbnailSize: thumbSize };
 

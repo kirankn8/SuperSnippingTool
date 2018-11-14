@@ -22,6 +22,10 @@ function createWindow() {
         // backgroundColor: '#212121',
         show: false,
         frame: true,
+        webPreferences: {
+            nodeIntegration: false,
+            preload: __dirname + '/utils/preload.js'
+        },
     });
 
     mainWindow.loadURL(
@@ -52,10 +56,10 @@ function createWindow() {
     });
 
     // TODO: Fix the global shortcut feature
-    // globalShortcut.register('Alt+C', function () {
-    //     const { takeScreenShot } = require('./app/screenshot-action');
-    //     takeScreenShot();
-    // });
+    globalShortcut.register('Alt+C', function () {
+        const { takeScreenShot } = require('./utils/capture-screenshot');
+        takeScreenShot();
+    });
 }
 
 app.on('ready', createWindow);
