@@ -7,25 +7,23 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 const globalShortcut = electron.globalShortcut;
+const config = require('./config.json');
+const keyboardEvents = require('./fixtures/keyboard-events');
 
-let mainWindow;
+let win;
 
 function createWindow() {
-    mainWindow = new BrowserWindow({
-        title: 'Super Snipping Tool',
-        width: 400,
-        height: 230,
-        minWidth: 400,
-        minHeight: 230,
-        show: false,
-        frame: true,
-        // webPreferences: {
-        //     nodeIntegration: false,
-        //     preload: __dirname + '/app/utils/preload.js'
-        // },
+    win = new BrowserWindow({
+        title: config.title,
+        width: config.width,
+        height: config.height,
+        minWidth: config.minWidth,
+        minHeight: config.minHeight,
+        show: config.show,
+        frame: config.frame,
     });
 
-    mainWindow.loadURL(
+    win.loadURL(
         process.env.ELECTRON_START_URL ||
         url.format({
             pathname: path.join(__dirname, '/../build/index.html'),
@@ -34,16 +32,15 @@ function createWindow() {
         })
     );
 
-    mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
+    win.once('ready-to-show', () => {
+        win.show();
     });
 
-    mainWindow.on('closed', () => {
-        mainWindow = null;
+    win.on('closed', () => {
+        win = null;
     });
 
-    // React Debugger
-    // Install React Dev Tools
+    // React Debugger. Install React Dev Tools
     const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
     installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
@@ -52,10 +49,8 @@ function createWindow() {
         console.log('An error occurred: ', err);
     });
 
-    // TODO: Fix the global shortcut feature
-    globalShortcut.register('Alt+C', function () {
-        mainWindow.webContents.send('capture-screenshot');
-    });
+
+    keyboardEvents(win);
 }
 
 app.on('ready', createWindow);
@@ -67,7 +62,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-    if (mainWindow === null) {
+    if (win === null) {
         createWindow();
     }
 });

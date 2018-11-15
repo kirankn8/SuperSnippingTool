@@ -5,18 +5,22 @@ import CardContent from '@material-ui/core/CardContent';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
-import { takeScreenshot } from './services/actions';
 import './app.css';
+import { takeScreenshot } from './services/actions';
 import listeners from './services/listeners';
 
 class VideoRecording extends React.Component {
 
+    handleRecordClick() {
+    }
+
     render() {
+
         return (
             <div>
                 <Card>
                     <CardContent className="centered">
-                        <Button variant="outlined">
+                        <Button variant="outlined" onClick={() => this.handleRecordClick()}>
                             <span className="record-style">
                                 <i className="material-icons">fiber_manual_record</i>
                             </span>
