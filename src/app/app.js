@@ -5,14 +5,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
+import { takeScreenshot } from './services/actions';
 import './app.css';
-import { takeScreenShot } from '../utils/capture-screenshot';
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-
-ipcRenderer.on('capture-screenshot', function () {
-    takeScreenShot();
-});
+import listeners from './services/listeners';
 
 class VideoRecording extends React.Component {
 
@@ -23,7 +18,7 @@ class VideoRecording extends React.Component {
                     <CardContent className="centered">
                         <Button variant="outlined">
                             <span className="record-style">
-                                <i class="material-icons">fiber_manual_record</i>
+                                <i className="material-icons">fiber_manual_record</i>
                             </span>
                         </Button> or <b className="record-style">(Alt + R)</b>
                     </CardContent>
@@ -33,11 +28,10 @@ class VideoRecording extends React.Component {
     }
 }
 
-
 class CameraSnapshot extends React.Component {
 
     handleCameraClick() {
-        takeScreenShot();
+        takeScreenshot();
     }
 
     render() {
@@ -48,7 +42,7 @@ class CameraSnapshot extends React.Component {
                         <Typography>
                             <Button variant="outlined" onClick={() => this.handleCameraClick()}>
                                 <span className="camera-style">
-                                    <i class="material-icons">camera_alt</i>
+                                    <i className="material-icons">camera_alt</i>
                                 </span>
                             </Button> or <b className="camera-style">(Alt + C)</b>
                         </Typography>
@@ -69,7 +63,7 @@ class ToolHeading extends React.Component {
                 <Typography variant="h6" color="inherit">
                     {this.props.toolName}
                     <br />
-                    <i class="material-icons">
+                    <i className="material-icons">
                         {this.props.iconName}
                     </i>
                 </Typography>
@@ -135,6 +129,10 @@ class ActionToolBar extends React.Component {
 }
 
 export function App() {
+
+    // listen to keyboard events
+    listeners();
+
     return (
         <div>
             <ActionToolBar />

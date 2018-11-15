@@ -15,14 +15,14 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         title: 'Super Snipping Tool',
         width: 400,
-        height: 200,
+        height: 230,
         minWidth: 400,
-        minHeight: 200,
+        minHeight: 230,
         show: false,
         frame: true,
         // webPreferences: {
         //     nodeIntegration: false,
-        //     preload: __dirname + '/utils/preload.js'
+        //     preload: __dirname + '/app/utils/preload.js'
         // },
     });
 
