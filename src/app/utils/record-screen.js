@@ -1,27 +1,14 @@
 const electron = window.require('electron');
-const fs = electron.remote.require('fs');
-const path = electron.remote.require('path');
 const desktopCapturer = electron.desktopCapturer;
 const electronScreen = electron.screen;
-const shell = electron.shell;
+const fs = electron.remote.require('fs');
 
-exports.recordScreen = function () {
+let recorder;
+let blobs = [];
+
+export function startRecording() {
     const thumbSize = determineScreenshot();
     let options = { types: ['screen'], thumbnailSize: thumbSize };
-
-    desktopCapturer.getSources(options, function (error, sources) {
-        if (error) return console.log(error.message);
-        sources.forEach((source) => {
-            console.log(source);
-            if (source.name === 'Entire screen' || source.name === 'Screen 1') {
-                const screenshotPath = path.join('C:/Users/KIRAN KN/Desktop', 'screenshot.png');
-                fs.writeFile(screenshotPath, source.thumbnail.toPNG(), function (err) {
-                    if (err) return console.log(err.message);
-                    shell.openExternal('file://' + screenshotPath);
-                })
-            }
-        });
-    });
 
     desktopCapturer.getSources(options, function (error, sources) {
         if (error) throw console.log(error.message);
@@ -40,17 +27,61 @@ exports.recordScreen = function () {
             }
         }
     });
-
-    function handleStream(stream) {
-        const video = document.querySelector('video')
-        video.srcObject = stream
-        video.onloadedmetadata = (e) => video.play()
-    }
-
-    function handleError(e) {
-        console.log(e)
-    }
 }
+
+
+function handleError(e) {
+    console.log(e)
+}
+
+function handleStream(stream) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+    recorder = new MediaRecorder(stream);
+    blobs = [];
+    recorder.ondataavailable = function (event) {
+        blobs.push(event.data);
+    };
+    recorder.start();
+    console.log(recorder);
+}
+
+// TODO: Fix stop Recording function
+export function stopRecording() {
+    console.log(recorder);
+    recorder.stop();
+
+    // https://stackoverflow.com/questions/8609289/convert-a-binary-nodejs-buffer-to-javascript-arraybuffer/12101012#12101012
+    toArrayBuffer(new Blob(blobs, { type: 'video/webm' }), function (ab) {
+        var buffer = toBuffer(ab);
+        var file = `./videos/example.webm`;
+        fs.writeFile(file, buffer, function (err) {
+            if (err) {
+                console.error('Failed to save video ' + err);
+            } else {
+                console.log('Saved video: ' + file);
+            }
+        });
+    });
+}
+
+function toArrayBuffer(blob, cb) {
+    let fileReader = new FileReader();
+    fileReader.onload = function () {
+        let arrayBuffer = this.result;
+        cb(arrayBuffer);
+    };
+    fileReader.readAsArrayBuffer(blob);
+}
+
+function toBuffer(ab) {
+    let buffer = new Buffer(ab.byteLength);
+    let arr = new Uint8Array(ab);
+    for (let i = 0; i < arr.byteLength; i++) {
+        buffer[i] = arr[i];
+    }
+    return buffer;
+}
+
 
 function determineScreenshot() {
     const screenSize = electronScreen.getPrimaryDisplay().workAreaSize;

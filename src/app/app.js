@@ -6,12 +6,19 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import './app.css';
-import { takeScreenshot } from './services/actions';
+import { takeScreenshot, startScreenRecordScreen, stopScreenRecordScreen } from './services/actions';
 import listeners from './services/listeners';
 
 class VideoRecording extends React.Component {
 
-    handleRecordClick() {
+    handleRecordStartClick() {
+        console.log('recording!')
+        startScreenRecordScreen();
+    }
+
+    handleRecordStopClick() {
+        console.log('stop recording!')
+        stopScreenRecordScreen();
     }
 
     render() {
@@ -20,9 +27,15 @@ class VideoRecording extends React.Component {
             <div>
                 <Card>
                     <CardContent className="centered">
-                        <Button variant="outlined" onClick={() => this.handleRecordClick()}>
+                        <Button variant="outlined" onClick={() => this.handleRecordStartClick()}>
                             <span className="record-style">
                                 <i className="material-icons">fiber_manual_record</i>
+                            </span>
+                        </Button> or <b className="record-style">(Alt + R)</b>
+                        &nbsp;
+                        <Button variant="outlined" onClick={() => this.handleRecordStopClick()}>
+                            <span className="record-style">
+                                <i className="material-icons">stop</i>
                             </span>
                         </Button> or <b className="record-style">(Alt + R)</b>
                     </CardContent>

@@ -5,14 +5,13 @@ const desktopCapturer = electron.desktopCapturer;
 const electronScreen = electron.screen;
 const shell = electron.shell;
 
-exports.takeScreenShot = function () {
+export function takeScreenShot() {
     const thumbSize = determineScreenshot();
     let options = { types: ['screen'], thumbnailSize: thumbSize };
 
     desktopCapturer.getSources(options, function (error, sources) {
         if (error) return console.log(error.message);
         sources.forEach((source) => {
-            console.log(source);
             if (source.name === 'Entire screen' || source.name === 'Screen 1') {
                 const screenshotPath = path.join('C:/Users/KIRAN KN/Desktop', 'screenshot.png');
                 fs.writeFile(screenshotPath, source.thumbnail.toPNG(), function (err) {
