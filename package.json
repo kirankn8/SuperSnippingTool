@@ -2,9 +2,12 @@
   "name": "super-snipping-tool",
   "version": "0.1.0",
   "private": true,
+  "description": "A snipping tool that can snip anything on screen",
+  "author": "Kiran KN",
   "dependencies": {
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",
+    "cross-env": "^5.2.0",
     "is-electron": "^2.2.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
@@ -14,7 +17,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "nf start -p 3000",
-    "react-start": "react-scripts start",
+    "react-start": "cross-env BROWSER=none react-scripts start",
     "electron": "electron .",
     "electron-start": "node src/start-react",
     "build": "react-scripts build",
@@ -42,7 +45,7 @@
   "build": {
     "appId": "com.electron.electron-with-create-react-app",
     "win": {
-      "iconUrl": "assets/logo.png"
+      "icon": "assets/logo.png"
     },
     "directories": {
       "buildResources": "public"

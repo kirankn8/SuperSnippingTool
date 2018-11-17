@@ -6,7 +6,6 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
-const globalShortcut = electron.globalShortcut;
 const config = require('./config.json');
 const keyboardEvents = require('./fixtures/keyboard-events');
 
