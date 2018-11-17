@@ -11,13 +11,24 @@ import listeners from './services/listeners';
 
 class VideoRecording extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            recordingVideo: false,
+        }
+    }
+
     handleRecordStartClick() {
-        console.log('recording!')
+        this.setState({
+            recordingVideo: true,
+        });
         startScreenRecordScreen();
     }
 
     handleRecordStopClick() {
-        console.log('stop recording!')
+        this.setState({
+            recordingVideo: false,
+        });
         stopScreenRecordScreen();
     }
 
@@ -27,17 +38,27 @@ class VideoRecording extends React.Component {
             <div>
                 <Card>
                     <CardContent className="centered">
-                        <Button variant="outlined" onClick={() => this.handleRecordStartClick()}>
-                            <span className="record-style">
-                                <i className="material-icons">fiber_manual_record</i>
+                        {
+                            this.state.recordingVideo === false &&
+                            <span>
+                                <Button variant="outlined" onClick={() => this.handleRecordStartClick()}>
+                                    <span className="record-style">
+                                        <i className="material-icons">fiber_manual_record</i>
+                                    </span>
+                                </Button> or <b className="record-style">(Alt + R)</b>
                             </span>
-                        </Button> or <b className="record-style">(Alt + R)</b>
+                        }
                         &nbsp;
-                        <Button variant="outlined" onClick={() => this.handleRecordStopClick()}>
-                            <span className="record-style">
-                                <i className="material-icons">stop</i>
+                        {
+                            this.state.recordingVideo === true &&
+                            <span>
+                                <Button variant="outlined" onClick={() => this.handleRecordStopClick()}>
+                                    <span className="record-style">
+                                        <i className="material-icons">stop</i>
+                                    </span>
+                                </Button> or <b className="record-style">(Alt + R)</b>
                             </span>
-                        </Button> or <b className="record-style">(Alt + R)</b>
+                        }
                     </CardContent>
                 </Card>
             </div>

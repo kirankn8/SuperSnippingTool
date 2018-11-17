@@ -16,7 +16,12 @@ export function startRecording() {
             console.log(sources);
             if (sources[i].name === 'Entire screen' || sources[i].name === 'Screen 1') {
                 navigator.mediaDevices.getUserMedia({
-                    audio: false,
+                    audio: {
+                        mandatory: {
+                            chromeMediaSource: 'desktop',
+                            chromeMediaSourceId: sources[i].id,
+                        }
+                    },
                     video: {
                         mandatory: {
                             chromeMediaSource: 'desktop',
