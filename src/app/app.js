@@ -9,54 +9,33 @@ import './app.css';
 import { takeScreenshot, startScreenRecordScreen, stopScreenRecordScreen } from './services/actions';
 import listeners from './services/listeners';
 
+let recordingScreen = false;
+
 class VideoRecording extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            recordingVideo: false,
-        }
-    }
-
-    handleRecordStartClick() {
-        this.setState({
-            recordingVideo: true,
-        });
-        startScreenRecordScreen();
-    }
-
-    handleRecordStopClick() {
-        this.setState({
-            recordingVideo: false,
-        });
-        stopScreenRecordScreen();
-    }
-
     render() {
-
         return (
             <div>
                 <Card>
                     <CardContent className="centered">
                         {
-                            this.state.recordingVideo === false &&
+                            this.props.recordingScreen === false &&
                             <span>
-                                <Button variant="outlined" onClick={() => this.handleRecordStartClick()}>
+                                <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
                                     <span className="record-style">
                                         <i className="material-icons">fiber_manual_record</i>
                                     </span>
-                                </Button> or <b className="record-style">(Alt + R)</b>
+                                </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
                             </span>
                         }
-                        &nbsp;
                         {
-                            this.state.recordingVideo === true &&
+                            this.props.recordingScreen === true &&
                             <span>
-                                <Button variant="outlined" onClick={() => this.handleRecordStopClick()}>
+                                <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
                                     <span className="record-style">
                                         <i className="material-icons">stop</i>
                                     </span>
-                                </Button> or <b className="record-style">(Alt + R)</b>
+                                </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
                             </span>
                         }
                     </CardContent>
@@ -116,6 +95,7 @@ class ActionToolBar extends React.Component {
         super(props);
         this.state = {
             currentAction: 1,
+            recordingScreen: false,
             actions: [
                 {
                     toolId: 1,
@@ -129,12 +109,31 @@ class ActionToolBar extends React.Component {
                 },
             ]
         };
+
+        // TODO: the below was a quick hack to update recordingScreen - need to be fixed
+        setInterval((recordingScreen) => {
+            this.setState({
+                recordingScreen: recordingScreen
+            });
+        }, 100)
+
+        listeners(this.toggleRecording); // listen to keyboard events
     }
 
-    handleCameraClick(currentAction) {
+    handleTabClick(currentAction) {
         this.setState({
             currentAction: currentAction,
         });
+    }
+
+    async toggleRecording() {
+        if (recordingScreen === false) {
+            await startScreenRecordScreen();
+            recordingScreen = true;
+        } else {
+            await stopScreenRecordScreen();
+            recordingScreen = false;
+        }
     }
 
     render() {
@@ -146,7 +145,7 @@ class ActionToolBar extends React.Component {
                     toolId={action.toolId}
                     toolName={action.toolName}
                     iconName={action.iconName}
-                    onClick={() => this.handleCameraClick(action.toolId)}
+                    onClick={() => this.handleTabClick(action.toolId)}
                 />
             );
         });
@@ -159,21 +158,24 @@ class ActionToolBar extends React.Component {
                     </Toolbar>
                 </AppBar>
                 {this.state.currentAction === 1 && <CameraSnapshot></CameraSnapshot>}
-                {this.state.currentAction === 2 && <VideoRecording></VideoRecording>}
+                {this.state.currentAction === 2 &&
+                    <VideoRecording
+                        recordingScreen={recordingScreen}
+                        onRecordClick={() => this.toggleRecording()}
+                    />
+                }
             </div>
 
         );
     }
 }
 
-export function App() {
-
-    // listen to keyboard events
-    listeners();
-
-    return (
-        <div>
-            <ActionToolBar />
-        </div>
-    );
+export class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <ActionToolBar />
+            </div>
+        );
+    }
 }

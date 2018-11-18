@@ -11,6 +11,11 @@ const keyboardEvents = (win) => {
         win.webContents.send(captureScreen.eventName);
     });
 
+    const recordScreen = keyboardOps.recordScreen;
+    globalShortcut.register(recordScreen.keyboardShortcut, function () {
+        win.webContents.send(recordScreen.eventName);
+    });
+
 }
 
 module.exports = keyboardEvents;

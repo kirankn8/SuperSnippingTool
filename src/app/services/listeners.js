@@ -5,7 +5,7 @@ const config = require('../../config.json')
 
 const keyboardOps = config.keyboardEvents;
 
-const listeners = (ipc) => {
+const listeners = (ipc, cb) => {
 
     const captureScreen = keyboardOps.captureScreenshot;
     ipc.on(captureScreen.eventName, () => {
@@ -14,8 +14,8 @@ const listeners = (ipc) => {
 
     const recordScreen = keyboardOps.recordScreen;
     ipc.on(recordScreen.eventName, () => {
-        takeScreenshot();
+        cb();
     });
 }
 
-export default () => listeners(ipcRenderer);
+export default (cb) => listeners(ipcRenderer, cb);
