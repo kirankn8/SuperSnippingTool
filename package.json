@@ -1,8 +1,22 @@
 {
   "name": "super-snipping-tool",
-  "version": "0.1.0",
   "description": "A snipping tool that can snip anything on screen",
   "author": "Kiran KN",
+  "homepage": "./",
+  "version": "0.1.0",
+  "main": "public/electron.js",
+  "scripts": {
+    "build": "react-scripts build",
+    "dist": "npm run build && build",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-start": "node src/start-react",
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "react-start": "cross-env BROWSER=none react-scripts start",
+    "start": "nf start -p 3000",
+    "test": "react-scripts test"
+  },
   "dependencies": {
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",
@@ -12,30 +26,6 @@
     "react-dom": "^16.6.1",
     "react-scripts": "2.1.1"
   },
-  "homepage": "./",
-  "main": "public/electron.js",
-  "scripts": {
-    "start": "nf start -p 3000",
-    "react-start": "cross-env BROWSER=none react-scripts start",
-    "electron": "electron .",
-    "electron-start": "node src/start-react",
-    "electron-dev": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "pack": "build --dir",
-    "dist": "npm run build && build",
-    "postinstall": "install-app-deps"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
     "concurrently": "^4.0.1",
     "electron": "^3.0.8",
@@ -44,6 +34,12 @@
     "electron-react-devtools": "^0.5.3",
     "wait-on": "^3.2.0"
   },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "build": {
     "appId": "com.electron.super-snipping-tool",
     "files": [
@@ -56,5 +52,8 @@
       "target": "NSIS",
       "icon": "assets/icons/ms-icon-310x310.png"
     }
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   }
 }
