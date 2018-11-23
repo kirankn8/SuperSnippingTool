@@ -1,9 +1,8 @@
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
-const path = electron.remote.require('path');
+const { dialog } = electron.remote
 const desktopCapturer = electron.desktopCapturer;
 const electronScreen = electron.screen;
-const shell = electron.shell;
 
 export function takeScreenShot() {
     const thumbSize = determineScreenshot();
@@ -13,11 +12,27 @@ export function takeScreenShot() {
         if (error) return console.log(error.message);
         sources.forEach((source) => {
             if (source.name === 'Entire screen' || source.name === 'Screen 1') {
-                const screenshotPath = path.join('C:/Users/KIRAN KN/Desktop', 'screenshot.png');
-                fs.writeFile(screenshotPath, source.thumbnail.toPNG(), function (err) {
-                    if (err) return console.log(err.message);
-                    shell.openExternal('file://' + screenshotPath);
-                })
+                dialog.showSaveDialog({
+                    title: 'Save Screenshot',
+                    filters: [
+                        { name: 'Images', extensions: ['png', 'jpg', 'jpeg'] },
+                    ]
+                },
+                    (filename) => {
+                        if (filename) {
+                            const fileExt = filename.split('.').pop();
+                            if (fileExt === 'png') {
+                                fs.writeFile(filename, source.thumbnail.toPNG(), function (err) {
+                                    if (err) return console.log(err.message);
+                                });
+                            } else {
+                                fs.writeFile(filename, source.thumbnail.toJPEG(100), function (err) {
+                                    if (err) return console.log(err.message);
+                                });
+                            }
+
+                        }
+                    });
             }
         });
     });

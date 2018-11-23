@@ -61,7 +61,7 @@ class CameraSnapshot extends React.Component {
                                 <span className="camera-style">
                                     <i className="material-icons">camera_alt</i>
                                 </span>
-                            </Button> or <b className="camera-style">(Alt + C)</b>
+                            </Button> or <b className="camera-style">&nbsp;(Alt + C)</b>
                         </Typography>
                     </CardContent>
                 </Card>
