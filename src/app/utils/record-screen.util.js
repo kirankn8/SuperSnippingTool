@@ -101,9 +101,11 @@ export function stopRecording() {
                                 if (err) {
                                     reject('Failed to save video ' + err);
                                 } else {
-                                    resolve('Saved video: ' + filename);
+                                    resolve(filename);
                                 }
                             });
+                        } else {
+                            resolve(null);
                         }
                     });
             });

@@ -5,9 +5,16 @@ import CardContent from '@material-ui/core/CardContent';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
-import './app.css';
-import { takeScreenshot, startScreenRecordScreen, stopScreenRecordScreen } from './services/actions';
-import listeners from './services/listeners';
+import { Link } from "react-router-dom";
+import './app.component.css';
+import {
+    takeScreenshot,
+    startScreenRecordScreen,
+    stopScreenRecordScreen,
+    windowResize,
+} from '../services/actions.service';
+import listeners from '../services/listeners.service';
+import packageJson from '../../../package.json';
 
 let recordingScreen = false;
 
@@ -15,32 +22,30 @@ class VideoRecording extends React.Component {
 
     render() {
         return (
-            <div>
-                <Card>
-                    <CardContent className="centered">
-                        {
-                            this.props.recordingScreen === false &&
-                            <span>
-                                <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
-                                    <span className="record-style">
-                                        <i className="material-icons">fiber_manual_record</i>
-                                    </span>
-                                </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
-                            </span>
-                        }
-                        {
-                            this.props.recordingScreen === true &&
-                            <span>
-                                <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
-                                    <span className="record-style">
-                                        <i className="material-icons">stop</i>
-                                    </span>
-                                </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
-                            </span>
-                        }
-                    </CardContent>
-                </Card>
-            </div>
+            <Card className="card-style">
+                <CardContent className="centered">
+                    {
+                        this.props.recordingScreen === false &&
+                        <Typography>
+                            <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
+                                <span className="record-style">
+                                    <i className="material-icons">fiber_manual_record</i>
+                                </span>
+                            </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
+                        </Typography>
+                    }
+                    {
+                        this.props.recordingScreen === true &&
+                        <Typography>
+                            <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
+                                <span className="record-style">
+                                    <i className="material-icons">stop</i>
+                                </span>
+                            </Button> or <b className="record-style">&nbsp;(Alt + R)</b>
+                        </Typography>
+                    }
+                </CardContent>
+            </Card>
         );
     }
 }
@@ -48,24 +53,24 @@ class VideoRecording extends React.Component {
 class CameraSnapshot extends React.Component {
 
     handleCameraClick() {
-        takeScreenshot();
+        takeScreenshot().then((filename) => {
+            console.log(filename);
+        });
     }
 
     render() {
         return (
-            <div>
-                <Card>
-                    <CardContent className="centered">
-                        <Typography>
-                            <Button variant="outlined" onClick={() => this.handleCameraClick()}>
-                                <span className="camera-style">
-                                    <i className="material-icons">camera_alt</i>
-                                </span>
-                            </Button> or <b className="camera-style">&nbsp;(Alt + C)</b>
-                        </Typography>
-                    </CardContent>
-                </Card>
-            </div>
+            <Card className="card-style">
+                <CardContent className="centered">
+                    <Typography>
+                        <Button variant="outlined" onClick={() => this.handleCameraClick()}>
+                            <span className="camera-style">
+                                <i className="material-icons">camera_alt</i>
+                            </span>
+                        </Button> or <b className="camera-style">&nbsp;(Alt + C)</b>
+                    </Typography>
+                </CardContent>
+            </Card>
         );
     }
 }
@@ -131,7 +136,8 @@ class ActionToolBar extends React.Component {
             await startScreenRecordScreen();
             recordingScreen = true;
         } else {
-            await stopScreenRecordScreen();
+            const filename = await stopScreenRecordScreen();
+            console.log(filename);
             recordingScreen = false;
         }
     }
@@ -170,11 +176,51 @@ class ActionToolBar extends React.Component {
     }
 }
 
-export class App extends React.Component {
+class BottomNav extends React.Component {
     render() {
         return (
-            <div>
+            <AppBar position="static" className="bottom-navbar">
+                <Toolbar variant="dense">
+                    <Link to="/settings/">
+                        <i className="material-icons">
+                            settings
+                        </i>
+                    </Link>
+                    <div className="version-number">v{packageJson.version}</div>
+                </Toolbar>
+            </AppBar>
+
+        );
+    }
+}
+
+
+export class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            fileName: null,
+        }
+    }
+
+    screenCaptureorRecord(filename) {
+        this.setState({
+            fileName: filename
+        });
+    }
+
+    componentDidMount() {
+        const w = this.refs.theApp.clientWidth;
+        const h = this.refs.theApp.clientHeight;
+        windowResize(w, h + 80);
+    }
+
+    render() {
+        return (
+            <div ref="theApp">
                 <ActionToolBar />
+                <BottomNav />
             </div>
         );
     }

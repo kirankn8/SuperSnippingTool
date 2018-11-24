@@ -1,0 +1,21 @@
+.settings-card > div {
+    padding-top: 0px !important;
+}
+
+.bottom-navbar, .bottom-navbar > div {
+    background-color: #448AFF !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+}   
+
+.bottom-navbar a {
+    color: inherit;
+}
+
+.bottom-navbar i {
+    font-size: 18px;
+}
+
+.bottom-navbar .version-number{
+    margin-left: auto;
+}

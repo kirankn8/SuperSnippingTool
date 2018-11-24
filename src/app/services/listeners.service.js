@@ -1,4 +1,4 @@
-import { takeScreenshot } from './actions';
+import { takeScreenshot } from './actions.service';
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const config = require('../../config.json')

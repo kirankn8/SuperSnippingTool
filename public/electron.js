@@ -20,6 +20,7 @@ function createWindow() {
         minWidth: config.minWidth,
         minHeight: config.minHeight,
         show: config.show,
+        backgroundColor: config.backgroundColor,
         frame: config.frame,
     });
 
@@ -41,7 +42,7 @@ function createWindow() {
     });
 
     keyboardEvents(win);
-    menubar();
+    menubar(win);
 }
 
 app.on('ready', createWindow);
