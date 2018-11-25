@@ -4,6 +4,7 @@
     "height": 210,
     "minWidth": 400,
     "minHeight": 210,
+    "maxWidth": 400,
     "show": false,
     "frame": true,
     "backgroundColor": "#212121",

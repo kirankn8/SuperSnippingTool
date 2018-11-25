@@ -19,6 +19,7 @@ function createWindow() {
         height: config.height,
         minWidth: config.minWidth,
         minHeight: config.minHeight,
+        maxWidth: config.maxWidth,
         show: config.show,
         backgroundColor: config.backgroundColor,
         frame: config.frame,
