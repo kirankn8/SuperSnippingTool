@@ -16,8 +16,6 @@ import {
 import listeners from '../services/listeners.service';
 import packageJson from '../../../package.json';
 
-let recordingScreen = false;
-
 class VideoRecording extends React.Component {
 
     render() {
@@ -51,6 +49,18 @@ class VideoRecording extends React.Component {
 }
 
 class CameraSnapshot extends React.Component {
+
+    componentDidMount() {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('screenClick', this.handleCameraClick)
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('screenClick', this.handleCameraClick)
+        }
+    }
 
     handleCameraClick() {
         takeScreenshot().then((filename) => {
@@ -98,6 +108,8 @@ class ActionToolBar extends React.Component {
 
     constructor(props) {
         super(props);
+        this.toggleRecording = this.toggleRecording.bind(this);
+        localStorage.setItem('recordingScreen', false);
         this.state = {
             currentAction: 1,
             recordingScreen: false,
@@ -115,14 +127,7 @@ class ActionToolBar extends React.Component {
             ]
         };
 
-        // TODO: the below was a quick hack to update recordingScreen - need to be fixed
-        setInterval((recordingScreen) => {
-            this.setState({
-                recordingScreen: recordingScreen
-            });
-        }, 100)
-
-        listeners(this.toggleRecording); // listen to keyboard events
+        listeners(); // listen to keyboard events
     }
 
     handleTabClick(currentAction) {
@@ -131,14 +136,37 @@ class ActionToolBar extends React.Component {
         });
     }
 
+    componentDidMount() {
+        if (typeof window !== 'undefined') {
+            this.setState({
+                recordingScreen: localStorage.getItem('recordingScreen') === 'true'
+            })
+
+            window.addEventListener('screenRecord', this.toggleRecording)
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('screenRecord', this.toggleRecording)
+        }
+    }
+
+    updateState(value) {
+        this.setState({ recordingScreen: value });
+    }
+
     async toggleRecording() {
-        if (recordingScreen === false) {
+        const recordStatus = localStorage.getItem('recordingScreen') === 'true';
+        if (recordStatus === false) {
             await startScreenRecordScreen();
-            recordingScreen = true;
+            this.updateState(true);
+            localStorage.setItem('recordingScreen', true);
         } else {
             const filename = await stopScreenRecordScreen();
             console.log(filename);
-            recordingScreen = false;
+            this.updateState(false);
+            localStorage.setItem('recordingScreen', false);
         }
     }
 
@@ -166,7 +194,7 @@ class ActionToolBar extends React.Component {
                 {this.state.currentAction === 1 && <CameraSnapshot></CameraSnapshot>}
                 {this.state.currentAction === 2 &&
                     <VideoRecording
-                        recordingScreen={recordingScreen}
+                        recordingScreen={this.state.recordingScreen}
                         onRecordClick={() => this.toggleRecording()}
                     />
                 }

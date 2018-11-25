@@ -5,17 +5,18 @@ const config = require('../../config.json')
 
 const keyboardOps = config.keyboardEvents;
 
-const listeners = (ipc, cb) => {
+const listeners = (ipc) => {
 
     const captureScreen = keyboardOps.captureScreenshot;
     ipc.on(captureScreen.eventName, () => {
-        takeScreenshot();
+        window.dispatchEvent(new Event('screenClick'));
+
     });
 
     const recordScreen = keyboardOps.recordScreen;
     ipc.on(recordScreen.eventName, () => {
-        cb();
+        window.dispatchEvent(new Event('screenRecord'));
     });
 }
 
-export default (cb) => listeners(ipcRenderer, cb);
+export default () => listeners(ipcRenderer);
