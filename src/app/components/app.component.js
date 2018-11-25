@@ -15,6 +15,7 @@ import {
 } from '../services/actions.service';
 import listeners from '../services/listeners.service';
 import packageJson from '../../../package.json';
+import Snap from './snap.component'
 
 class VideoRecording extends React.Component {
 
@@ -55,7 +56,9 @@ class VideoRecording extends React.Component {
             localStorage.setItem('recordingScreen', true);
         } else {
             const filename = await stopScreenRecordScreen();
-            console.log(filename);
+            localStorage.setItem('fileSrc', filename);
+            localStorage.setItem('fileType', 'video');
+            window.dispatchEvent(new Event('snap'));
             this.updateState(false);
             localStorage.setItem('recordingScreen', false);
         }
@@ -107,7 +110,9 @@ class CameraSnapshot extends React.Component {
 
     handleCameraClick() {
         takeScreenshot().then((filename) => {
-            console.log(filename);
+            localStorage.setItem('fileSrc', filename);
+            localStorage.setItem('fileType', 'image');
+            window.dispatchEvent(new Event('snap'));
         });
     }
 
@@ -217,7 +222,6 @@ class BottomNav extends React.Component {
                     <div className="version-number">v{packageJson.version}</div>
                 </Toolbar>
             </AppBar>
-
         );
     }
 }
@@ -228,20 +232,47 @@ export class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fileName: null,
+            fileSrc: null,
+            fileType: null,
+            windowWidth: null,
         }
     }
 
-    screenCaptureorRecord(filename) {
-        this.setState({
-            fileName: filename
-        });
+    screenCaptureorRecord = () => {
+        const fileSrc = localStorage.getItem('fileSrc');
+        const fileType = localStorage.getItem('fileType');
+        if (fileSrc !== 'null' && fileType !== 'null') {
+            this.setState({
+                fileSrc: fileSrc,
+                fileType: fileType,
+            });
+        }
     }
 
     componentDidMount() {
+        console.log('called');
+        if (typeof window !== 'undefined') {
+            window.addEventListener('snap', this.screenCaptureorRecord)
+        }
         const w = this.refs.theApp.clientWidth;
         const h = this.refs.theApp.clientHeight;
         windowResize(w, h + 80);
+
+        this.setState({
+            windowWidth: w,
+        });
+    }
+
+    componentDidUpdate() {
+        const w = this.refs.theApp.clientWidth;
+        const h = this.refs.theApp.clientHeight;
+        windowResize(w, h + 80);
+    }
+
+    componentWillUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('snap', this.screenCaptureorRecord)
+        }
     }
 
     render() {
@@ -249,6 +280,15 @@ export class App extends React.Component {
             <div ref="theApp">
                 <ActionToolBar />
                 <BottomNav />
+                <br />
+                {this.state.fileType &&
+                    <Snap
+                        fileType={this.state.fileType}
+                        src={this.state.fileSrc}
+                        width="100%"
+                        height={this.state.windowWidth / 2}
+                    />
+                }
             </div>
         );
     }

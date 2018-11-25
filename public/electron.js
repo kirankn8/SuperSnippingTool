@@ -22,6 +22,9 @@ function createWindow() {
         show: config.show,
         backgroundColor: config.backgroundColor,
         frame: config.frame,
+        webPreferences: {
+            webSecurity: false
+        }
     });
 
     win.loadURL(
