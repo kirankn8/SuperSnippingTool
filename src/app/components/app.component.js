@@ -18,14 +18,57 @@ import packageJson from '../../../package.json';
 
 class VideoRecording extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.toggleRecording = this.toggleRecording.bind(this);
+        localStorage.setItem('recordingScreen', false);
+        this.state = {
+            recordingScreen: false,
+        };
+    }
+
+    componentDidMount() {
+        if (typeof window !== 'undefined') {
+            this.setState({
+                recordingScreen: localStorage.getItem('recordingScreen') === 'true'
+            })
+
+            window.addEventListener('screenRecord', this.toggleRecording)
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('screenRecord', this.toggleRecording)
+        }
+    }
+
+    updateState(value) {
+        this.setState({ recordingScreen: value });
+    }
+
+    async toggleRecording() {
+        const recordStatus = localStorage.getItem('recordingScreen') === 'true';
+        if (recordStatus === false) {
+            await startScreenRecordScreen();
+            this.updateState(true);
+            localStorage.setItem('recordingScreen', true);
+        } else {
+            const filename = await stopScreenRecordScreen();
+            console.log(filename);
+            this.updateState(false);
+            localStorage.setItem('recordingScreen', false);
+        }
+    }
+
     render() {
         return (
             <Card className="card-style">
                 <CardContent className="centered">
                     {
-                        this.props.recordingScreen === false &&
+                        this.state.recordingScreen === false &&
                         <Typography>
-                            <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
+                            <Button variant="outlined" onClick={() => this.toggleRecording()}>
                                 <span className="record-style">
                                     <i className="material-icons">fiber_manual_record</i>
                                 </span>
@@ -33,9 +76,9 @@ class VideoRecording extends React.Component {
                         </Typography>
                     }
                     {
-                        this.props.recordingScreen === true &&
+                        this.state.recordingScreen === true &&
                         <Typography>
-                            <Button variant="outlined" onClick={() => this.props.onRecordClick()}>
+                            <Button variant="outlined" onClick={() => this.toggleRecording()}>
                                 <span className="record-style">
                                     <i className="material-icons">stop</i>
                                 </span>
@@ -108,11 +151,8 @@ class ActionToolBar extends React.Component {
 
     constructor(props) {
         super(props);
-        this.toggleRecording = this.toggleRecording.bind(this);
-        localStorage.setItem('recordingScreen', false);
         this.state = {
             currentAction: 1,
-            recordingScreen: false,
             actions: [
                 {
                     toolId: 1,
@@ -136,40 +176,6 @@ class ActionToolBar extends React.Component {
         });
     }
 
-    componentDidMount() {
-        if (typeof window !== 'undefined') {
-            this.setState({
-                recordingScreen: localStorage.getItem('recordingScreen') === 'true'
-            })
-
-            window.addEventListener('screenRecord', this.toggleRecording)
-        }
-    }
-
-    componentWillUnmount() {
-        if (typeof window !== 'undefined') {
-            window.removeEventListener('screenRecord', this.toggleRecording)
-        }
-    }
-
-    updateState(value) {
-        this.setState({ recordingScreen: value });
-    }
-
-    async toggleRecording() {
-        const recordStatus = localStorage.getItem('recordingScreen') === 'true';
-        if (recordStatus === false) {
-            await startScreenRecordScreen();
-            this.updateState(true);
-            localStorage.setItem('recordingScreen', true);
-        } else {
-            const filename = await stopScreenRecordScreen();
-            console.log(filename);
-            this.updateState(false);
-            localStorage.setItem('recordingScreen', false);
-        }
-    }
-
     render() {
         const actions = this.state.actions.map((action) => {
             return (
@@ -191,15 +197,9 @@ class ActionToolBar extends React.Component {
                         {actions}
                     </Toolbar>
                 </AppBar>
-                {this.state.currentAction === 1 && <CameraSnapshot></CameraSnapshot>}
-                {this.state.currentAction === 2 &&
-                    <VideoRecording
-                        recordingScreen={this.state.recordingScreen}
-                        onRecordClick={() => this.toggleRecording()}
-                    />
-                }
+                {this.state.currentAction === 1 && <CameraSnapshot />}
+                {this.state.currentAction === 2 && <VideoRecording />}
             </div>
-
         );
     }
 }
